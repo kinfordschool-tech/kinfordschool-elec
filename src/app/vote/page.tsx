@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import KinfordLogo from '@/components/KinfordLogo';
 
@@ -55,17 +55,16 @@ export default function VoteAccess() {
   return (
     <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
       {/* Background Decorative Glows */}
-      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-900/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-violet-900/10 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#A22538]/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#EEB540]/5 blur-[120px] pointer-events-none" />
 
       {/* Top Navbar */}
-      <header className="border-b border-slate-900 bg-slate-950/60 backdrop-blur-md relative z-10">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center gap-4">
-          <KinfordLogo size={42} />
-          <div>
-            <h1 className="font-semibold text-slate-100 tracking-wide text-lg">KINFORD SCHOOL</h1>
-            <p className="text-xs text-amber-500 font-medium tracking-wider uppercase">Official Voting Terminal</p>
-          </div>
+      <header className="border-b border-slate-900/60 bg-slate-950/60 backdrop-blur-md relative z-10">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <KinfordLogo size={40} showText={true} />
+          <span className="text-[10px] font-bold text-[#EEB540] tracking-widest uppercase bg-[#EEB540]/5 px-3 py-1 rounded-full border border-[#EEB540]/10">
+            Voting Terminal
+          </span>
         </div>
       </header>
 
@@ -92,7 +91,7 @@ export default function VoteAccess() {
                 onChange={handleCodeChange}
                 placeholder="KF-XXXXX"
                 disabled={loading}
-                className="w-full text-center px-4 py-4 rounded-xl border border-slate-800 bg-slate-900/60 text-white placeholder-slate-600 font-mono text-2xl tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all uppercase"
+                className="w-full text-center px-4 py-4 rounded-xl border border-slate-800 bg-slate-900/60 text-white placeholder-slate-700 font-mono text-2xl tracking-widest focus:outline-none focus:ring-2 focus:ring-[#EEB540] focus:border-transparent transition-all uppercase"
                 autoComplete="off"
                 autoFocus
               />
@@ -107,7 +106,7 @@ export default function VoteAccess() {
             <button
               type="submit"
               disabled={loading || !accessCode.trim()}
-              className="w-full py-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] transition-all text-base tracking-wide flex justify-center items-center gap-2 disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-indigo-500/15"
+              className="w-full py-4 rounded-xl font-bold text-white bg-[#A22538] hover:bg-[#8A1B2C] active:scale-[0.98] transition-all text-base tracking-wide flex justify-center items-center gap-2 disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-[#A22538]/15 border border-[#A22538]/10 cursor-pointer"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -121,7 +120,7 @@ export default function VoteAccess() {
 
       {/* Footer */}
       <footer className="border-t border-slate-950 py-6 text-center text-xs text-slate-600 relative z-10">
-        <p>© 2026 Kinford School. All rights reserved.</p>
+        <p>© 2026 Kinford School of Guidance. All rights reserved.</p>
       </footer>
     </div>
   );

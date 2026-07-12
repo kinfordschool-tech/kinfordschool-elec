@@ -135,7 +135,6 @@ export default function AdminDashboardClient({
   const [lastPolled, setLastPolled] = useState<Date>(new Date());
 
   // Refreshes all data by fetching from the /api/admin/results (which contains latest results/turnout)
-  // and router.refresh() for positions/candidates/voters.
   const refreshData = async () => {
     try {
       const res = await fetch('/api/admin/results');
@@ -438,7 +437,7 @@ export default function AdminDashboardClient({
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: sans-serif;">${v.name}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: sans-serif;">${v.class}</td>
-        <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #1e3a8a; letter-spacing: 2px;">${v.access_code}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #a22538; letter-spacing: 2px;">${v.access_code}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: sans-serif;">${v.has_voted ? 'YES' : 'NO'}</td>
       </tr>
     `
@@ -448,7 +447,7 @@ export default function AdminDashboardClient({
     printWindow.document.write(`
       <html>
         <head>
-          <title>Kinford School Council Election 2026 - Access Codes</title>
+          <title>Kinford School of Guidance - Access Codes</title>
           <style>
             body { font-family: sans-serif; padding: 20px; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -456,7 +455,7 @@ export default function AdminDashboardClient({
           </style>
         </head>
         <body onload="window.print();">
-          <h2>Kinford School Council Election 2026</h2>
+          <h2>Kinford School of Guidance</h2>
           <h3>Voter Registrations & Access Codes</h3>
           <p>Total Print Count: ${filtered.length} students. Hand out these codes to students individually.</p>
           <table>
@@ -497,13 +496,7 @@ export default function AdminDashboardClient({
       {/* Admin Navbar */}
       <header className="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <KinfordLogo size={36} />
-            <div>
-              <h1 className="font-semibold text-slate-100 text-base tracking-wide uppercase">Kinford Admin</h1>
-              <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider">Control Panel</p>
-            </div>
-          </div>
+          <KinfordLogo size={36} showText={true} />
 
           <div className="flex items-center gap-4">
             <button
@@ -530,14 +523,14 @@ export default function AdminDashboardClient({
       <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 flex flex-col md:flex-row gap-8">
         {/* Navigation Tabs list (sidebar) */}
         <aside className="w-full md:w-64 shrink-0 flex flex-col gap-2">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2 block">
+          <span className="text-[10px] font-bold text-[#EEB540] tracking-widest px-3 mb-2 block">
             ELECTION STATS
           </span>
           <button
             onClick={() => setActiveTab('results')}
             className={`w-full text-left px-4 py-3.5 rounded-xl font-bold flex items-center gap-3 transition cursor-pointer text-sm ${
               activeTab === 'results'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15'
+                ? 'bg-[#A22538] text-white shadow-lg shadow-[#A22538]/15'
                 : 'bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-slate-900/50'
             }`}
           >
@@ -549,7 +542,7 @@ export default function AdminDashboardClient({
             onClick={() => setActiveTab('turnout')}
             className={`w-full text-left px-4 py-3.5 rounded-xl font-bold flex items-center gap-3 transition cursor-pointer text-sm ${
               activeTab === 'turnout'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15'
+                ? 'bg-[#A22538] text-white shadow-lg shadow-[#A22538]/15'
                 : 'bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-slate-900/50'
             }`}
           >
@@ -557,14 +550,14 @@ export default function AdminDashboardClient({
             Voter Turnout
           </button>
 
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mt-6 mb-2 block">
+          <span className="text-[10px] font-bold text-[#EEB540] tracking-widest px-3 mt-6 mb-2 block">
             DATA CONFIG
           </span>
           <button
             onClick={() => setActiveTab('positions')}
             className={`w-full text-left px-4 py-3.5 rounded-xl font-bold flex items-center gap-3 transition cursor-pointer text-sm ${
               activeTab === 'positions'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15'
+                ? 'bg-[#A22538] text-white shadow-lg shadow-[#A22538]/15'
                 : 'bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-slate-900/50'
             }`}
           >
@@ -576,7 +569,7 @@ export default function AdminDashboardClient({
             onClick={() => setActiveTab('candidates')}
             className={`w-full text-left px-4 py-3.5 rounded-xl font-bold flex items-center gap-3 transition cursor-pointer text-sm ${
               activeTab === 'candidates'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15'
+                ? 'bg-[#A22538] text-white shadow-lg shadow-[#A22538]/15'
                 : 'bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-slate-900/50'
             }`}
           >
@@ -588,7 +581,7 @@ export default function AdminDashboardClient({
             onClick={() => setActiveTab('voters')}
             className={`w-full text-left px-4 py-3.5 rounded-xl font-bold flex items-center gap-3 transition cursor-pointer text-sm ${
               activeTab === 'voters'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15'
+                ? 'bg-[#A22538] text-white shadow-lg shadow-[#A22538]/15'
                 : 'bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-slate-900/50'
             }`}
           >
@@ -611,16 +604,16 @@ export default function AdminDashboardClient({
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EEB540] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EEB540]"></span>
                   </span>
-                  <span className="text-xs text-emerald-400 font-bold uppercase tracking-wider">Live Updates Active</span>
+                  <span className="text-xs text-[#EEB540] font-bold uppercase tracking-wider">Live Updates Active</span>
                   <button
                     onClick={() => setPollingActive(!pollingActive)}
                     className={`ml-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide border cursor-pointer transition ${
                       pollingActive 
                         ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' 
-                        : 'bg-indigo-600/20 border-indigo-500/20 text-indigo-400 hover:bg-indigo-600/30'
+                        : 'bg-[#EEB540]/10 border-[#EEB540]/20 text-[#EEB540] hover:bg-[#EEB540]/20'
                     }`}
                   >
                     {pollingActive ? 'Pause Stream' : 'Resume Stream'}
@@ -636,14 +629,14 @@ export default function AdminDashboardClient({
                 </div>
                 <div className="glass-panel p-6 rounded-2xl">
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Votes Polled</span>
-                  <p className="text-3xl font-extrabold text-emerald-500">{stats.votedCount}</p>
+                  <p className="text-3xl font-extrabold text-[#EEB540]">{stats.votedCount}</p>
                 </div>
                 <div className="glass-panel p-6 rounded-2xl">
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Voter Turnout</span>
                   <div className="flex items-center gap-4 mt-1">
-                    <p className="text-3xl font-extrabold text-indigo-400">{stats.turnoutPercentage}%</p>
+                    <p className="text-3xl font-extrabold text-[#EEB540]">{stats.turnoutPercentage}%</p>
                     <div className="flex-1 bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-900">
-                      <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${stats.turnoutPercentage}%` }} />
+                      <div className="bg-[#EEB540] h-full rounded-full" style={{ width: `${stats.turnoutPercentage}%` }} />
                     </div>
                   </div>
                 </div>
@@ -673,7 +666,7 @@ export default function AdminDashboardClient({
                               key={cand.id}
                               className={`p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border transition ${
                                 isLeader
-                                  ? 'bg-emerald-950/10 border-emerald-500/30'
+                                  ? 'bg-[#EEB540]/5 border-[#EEB540]/30'
                                   : 'bg-slate-900/30 border-slate-900/80'
                               }`}
                             >
@@ -682,14 +675,14 @@ export default function AdminDashboardClient({
                                 <img
                                   src={cand.photo_url}
                                   alt={cand.name}
-                                  className="w-12 h-12 rounded-xl object-cover bg-slate-900 border border-slate-800"
+                                  className="w-12 h-12 rounded-xl object-cover bg-slate-900 border border-slate-850"
                                 />
                                 <div>
                                   <div className="flex items-center gap-2">
                                     <h4 className="font-bold text-slate-200">{cand.name}</h4>
                                     <span className="text-[10px] font-bold text-slate-500">({cand.class})</span>
                                     {isLeader && (
-                                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#EEB540]/10 text-[#EEB540] border border-[#EEB540]/20">
                                         Leader
                                       </span>
                                     )}
@@ -701,7 +694,7 @@ export default function AdminDashboardClient({
                               <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
                                 <div className="w-32 bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-900 hidden sm:block">
                                   <div
-                                    className={`h-full rounded-full ${isLeader ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                                    className={`h-full rounded-full ${isLeader ? 'bg-[#EEB540]' : 'bg-slate-700'}`}
                                     style={{ width: `${percentage}%` }}
                                   />
                                 </div>
@@ -735,7 +728,7 @@ export default function AdminDashboardClient({
                 </div>
                 <div className="flex items-center gap-4">
                   <p className="text-sm text-slate-400">
-                    Turnout: <span className="text-indigo-400 font-bold">{stats.votedCount} / {stats.totalVoters}</span> ({stats.turnoutPercentage}%)
+                    Turnout: <span className="text-[#EEB540] font-bold">{stats.votedCount} / {stats.totalVoters}</span> ({stats.turnoutPercentage}%)
                   </p>
                 </div>
               </div>
@@ -748,7 +741,7 @@ export default function AdminDashboardClient({
                   placeholder="Search students or classes..."
                   value={turnoutSearch}
                   onChange={(e) => setTurnoutSearch(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                 />
               </div>
 
@@ -776,11 +769,11 @@ export default function AdminDashboardClient({
                             <td className="py-4 px-6 text-slate-400">{t.class}</td>
                             <td className="py-4 px-6 text-center">
                               {t.has_voted ? (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-[#EEB540]/10 text-[#EEB540] border border-[#EEB540]/20">
                                   <Check size={12} /> Yes
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-500 border border-slate-700/50">
+                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-slate-850 text-slate-500 border border-slate-800">
                                   <X size={12} /> No
                                 </span>
                               )}
@@ -817,14 +810,14 @@ export default function AdminDashboardClient({
                     value={posName}
                     onChange={(e) => setPosName(e.target.value)}
                     placeholder="e.g. Students' Editor"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="flex gap-2">
                   <button
                     type="submit"
                     disabled={loading || !posName.trim()}
-                    className="px-6 py-3 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white transition flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+                    className="px-6 py-3 rounded-xl font-bold bg-[#A22538] hover:bg-[#8A1B2C] active:scale-[0.98] text-white transition flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none border border-[#A22538]/10"
                   >
                     {editingPosId ? 'Update' : <><Plus size={16} /> Add Position</>}
                   </button>
@@ -937,7 +930,7 @@ export default function AdminDashboardClient({
                     setCandPhotoFile(null);
                     setShowCandModal(true);
                   }}
-                  className="px-5 py-3 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-2 cursor-pointer transition shadow-lg shadow-indigo-600/15"
+                  className="px-5 py-3 rounded-xl font-bold bg-[#A22538] hover:bg-[#8A1B2C] text-white flex items-center gap-2 cursor-pointer transition shadow-lg shadow-[#A22538]/15 border border-[#A22538]/10"
                 >
                   <Plus size={16} />
                   Add Candidate
@@ -972,11 +965,11 @@ export default function AdminDashboardClient({
                                 <div className="p-5">
                                   <div className="flex justify-between items-start gap-2">
                                     <h4 className="font-bold text-slate-200 text-base">{cand.name}</h4>
-                                    <span className="text-[10px] font-bold bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">{cand.class}</span>
+                                    <span className="text-[10px] font-bold bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-705">{cand.class}</span>
                                   </div>
                                   <p className="text-xs text-slate-500 mt-2 font-mono">Current Votes: {cand.vote_count}</p>
                                   <div className="mt-3 pt-3 border-t border-slate-900">
-                                    <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest block mb-1">Manifesto</span>
+                                    <span className="text-[9px] font-bold text-[#EEB540] uppercase tracking-widest block mb-1">Manifesto</span>
                                     <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">{cand.manifesto}</p>
                                   </div>
                                 </div>
@@ -1007,7 +1000,7 @@ export default function AdminDashboardClient({
               {/* CANDIDATE MODAL FORM */}
               {showCandModal && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                  <div className="max-w-lg w-full bg-slate-950 border border-slate-850 rounded-3xl p-8 max-h-[90vh] overflow-y-auto shadow-2xl relative">
+                  <div className="max-w-lg w-full bg-slate-950 border border-slate-850 rounded-3xl p-8 max-h-[90vh] overflow-y-auto shadow-2xl relative animate-fade-in">
                     <button
                       onClick={() => setShowCandModal(false)}
                       className="absolute top-6 right-6 p-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
@@ -1030,7 +1023,7 @@ export default function AdminDashboardClient({
                           value={candForm.name}
                           onChange={(e) => setCandForm({ ...candForm, name: e.target.value })}
                           placeholder="e.g. Sarah Jenkins"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                         />
                       </div>
 
@@ -1045,7 +1038,7 @@ export default function AdminDashboardClient({
                             value={candForm.class}
                             onChange={(e) => setCandForm({ ...candForm, class: e.target.value })}
                             placeholder="e.g. Grade 12-A"
-                            className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                           />
                         </div>
                         <div>
@@ -1056,7 +1049,7 @@ export default function AdminDashboardClient({
                             value={candForm.position_id}
                             required
                             onChange={(e) => setCandForm({ ...candForm, position_id: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                           >
                             <option value="" disabled className="bg-slate-950">Select Position</option>
                             {positions.map((pos) => (
@@ -1095,7 +1088,7 @@ export default function AdminDashboardClient({
                           value={candForm.manifesto}
                           onChange={(e) => setCandForm({ ...candForm, manifesto: e.target.value })}
                           placeholder="What will this candidate do if elected to the school council?"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all font-light leading-relaxed"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all font-light leading-relaxed font-sans"
                         />
                       </div>
 
@@ -1103,7 +1096,7 @@ export default function AdminDashboardClient({
                         <button
                           type="submit"
                           disabled={loading}
-                          className="flex-1 py-3.5 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+                          className="flex-1 py-3.5 rounded-xl font-bold bg-[#A22538] hover:bg-[#8A1B2C] text-white transition flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none border border-[#A22538]/10"
                         >
                           {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Save Candidate'}
                         </button>
@@ -1151,7 +1144,7 @@ export default function AdminDashboardClient({
                           value={voterForm.name}
                           onChange={(e) => setVoterForm({ ...voterForm, name: e.target.value })}
                           placeholder="e.g. James Miller"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                         />
                       </div>
                       <div>
@@ -1164,7 +1157,7 @@ export default function AdminDashboardClient({
                           value={voterForm.class}
                           onChange={(e) => setVoterForm({ ...voterForm, class: e.target.value })}
                           placeholder="e.g. 11-B"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                         />
                       </div>
                     </div>
@@ -1172,7 +1165,7 @@ export default function AdminDashboardClient({
                   <button
                     type="submit"
                     disabled={loading || !voterForm.name.trim() || !voterForm.class.trim()}
-                    className="w-full mt-6 py-3 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+                    className="w-full mt-6 py-3 rounded-xl font-bold bg-[#A22538] hover:bg-[#8A1B2C] text-white transition flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none border border-[#A22538]/10"
                   >
                     Add Voter
                   </button>
@@ -1191,7 +1184,7 @@ export default function AdminDashboardClient({
                       value={bulkText}
                       onChange={(e) => setBulkText(e.target.value)}
                       placeholder="James Miller, 11-B&#10;Sarah Jenkins, 12-A&#10;David Croft, 10-C"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all font-mono text-xs"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all font-mono text-xs"
                     />
                   </div>
                   
@@ -1210,7 +1203,7 @@ export default function AdminDashboardClient({
                   <button
                     type="submit"
                     disabled={loading || !bulkText.trim()}
-                    className="w-full mt-4 py-3 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+                    className="w-full mt-4 py-3 rounded-xl font-bold bg-[#A22538] hover:bg-[#8A1B2C] text-white transition flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none border border-[#A22538]/10"
                   >
                     Import Batch
                   </button>
@@ -1227,12 +1220,12 @@ export default function AdminDashboardClient({
                       placeholder="Search voters by name, class, or code..."
                       value={voterSearch}
                       onChange={(e) => setVoterSearch(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                     />
                   </div>
                   <button
                     onClick={handlePrintVoters}
-                    className="px-5 py-3 rounded-xl font-bold bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2 cursor-pointer border border-slate-850 shrink-0 w-full sm:w-auto justify-center"
+                    className="px-5 py-3 rounded-xl font-bold bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white transition flex items-center gap-2 cursor-pointer border border-slate-850 shrink-0 w-full sm:w-auto justify-center"
                   >
                     <Printer size={16} /> Print Access Codes
                   </button>
@@ -1262,10 +1255,10 @@ export default function AdminDashboardClient({
                             <tr key={v.id} className="border-b border-slate-900/50 hover:bg-slate-900/10 transition">
                               <td className="py-4 px-6 font-bold text-slate-200">{v.name}</td>
                               <td className="py-4 px-6 text-slate-400">{v.class}</td>
-                              <td className="py-4 px-6 font-mono text-sm tracking-wider font-bold text-amber-500">{v.access_code}</td>
+                              <td className="py-4 px-6 font-mono text-sm tracking-wider font-bold text-[#EEB540]">{v.access_code}</td>
                               <td className="py-4 px-6 text-center">
                                 {v.has_voted ? (
-                                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/10">Voted</span>
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EEB540]/15 text-[#EEB540] border border-[#EEB540]/10">Voted</span>
                                 ) : (
                                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-500">Pending</span>
                                 )}
@@ -1293,7 +1286,7 @@ export default function AdminDashboardClient({
 
       {/* Footer */}
       <footer className="border-t border-slate-950 py-6 text-center text-xs text-slate-600 sticky bottom-0 bg-slate-950/80 backdrop-blur-md">
-        <p>© 2026 Kinford School. All rights reserved.</p>
+        <p>© 2026 Kinford School of Guidance. All rights reserved.</p>
       </footer>
     </div>
   );

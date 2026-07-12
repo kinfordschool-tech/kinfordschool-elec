@@ -117,7 +117,8 @@ export default function BallotFlowClient({
   if (finished) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 p-6 relative">
-        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-900/10 blur-[120px] pointer-events-none" />
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#A22538]/5 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#EEB540]/5 blur-[120px] pointer-events-none" />
         
         <div className="max-w-md w-full glass-panel rounded-3xl p-12 text-center border-slate-800 shadow-2xl flex flex-col items-center">
           {/* Animated CSS Checkmark */}
@@ -137,7 +138,7 @@ export default function BallotFlowClient({
           </p>
 
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-widest bg-slate-900/50 px-4 py-2.5 rounded-xl border border-slate-900">
-            Resetting terminal in <span className="text-amber-500 font-mono text-sm font-bold">{countdown}</span> seconds...
+            Resetting terminal in <span className="text-[#EEB540] font-mono text-sm font-bold">{countdown}</span> seconds...
           </div>
         </div>
       </div>
@@ -149,24 +150,23 @@ export default function BallotFlowClient({
     return (
       <div className="min-h-screen flex flex-col bg-slate-950">
         {/* Header */}
-        <header className="border-b border-slate-900 bg-slate-950/60 backdrop-blur-md sticky top-0 z-10">
+        <header className="border-b border-slate-900/60 bg-slate-950/60 backdrop-blur-md sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <KinfordLogo size={36} showText={true} />
             <div className="flex items-center gap-4">
-              <KinfordLogo size={36} />
-              <div>
-                <h1 className="font-semibold text-slate-200 text-base tracking-wide">KINFORD BALLOT REVIEW</h1>
-                <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider">Confirm Your Choices</p>
+              <span className="text-[10px] font-bold text-[#EEB540] tracking-widest uppercase bg-[#EEB540]/5 px-3 py-1 rounded-full border border-[#EEB540]/10 hidden sm:inline-block">
+                Ballot Review
+              </span>
+              <div className="text-right">
+                <p className="text-xs text-slate-400">Voter: <span className="text-slate-200 font-medium">{voterName}</span></p>
+                <p className="text-[10px] text-slate-500">Class: {voterClass}</p>
               </div>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-400">Voter: <span className="text-slate-200 font-medium">{voterName}</span></p>
-              <p className="text-[10px] text-slate-500">Class: {voterClass}</p>
             </div>
           </div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-12 flex flex-col justify-center">
+        <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-12 flex flex-col justify-center animate-fade-in">
           <div className="glass-panel rounded-3xl p-8 md:p-12 border-slate-800 shadow-2xl">
             <h2 className="text-2xl font-bold text-slate-100 mb-2">Review Your Ballot</h2>
             <p className="text-sm text-slate-400 mb-8">
@@ -179,10 +179,10 @@ export default function BallotFlowClient({
                 return (
                   <div
                     key={pos.id}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 rounded-2xl bg-slate-900/40 border border-slate-800/80 gap-4"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 rounded-2xl bg-slate-900/20 border border-slate-800/80 gap-4"
                   >
                     <div>
-                      <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">
+                      <span className="text-[10px] font-bold text-[#EEB540] uppercase tracking-widest block mb-1">
                         Position {idx + 1}
                       </span>
                       <h3 className="font-bold text-slate-200 text-lg leading-none">{pos.name}</h3>
@@ -191,7 +191,7 @@ export default function BallotFlowClient({
                     <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
                       {picked ? (
                         <div className="text-left sm:text-right">
-                          <p className="font-bold text-amber-500 text-base">{picked.name}</p>
+                          <p className="font-bold text-[#EEB540] text-base">{picked.name}</p>
                           <p className="text-xs text-slate-500">Class: {picked.class}</p>
                         </div>
                       ) : (
@@ -200,7 +200,7 @@ export default function BallotFlowClient({
 
                       <button
                         onClick={() => handleJumpToPosition(idx)}
-                        className="text-xs font-bold text-indigo-400 hover:text-indigo-300 underline cursor-pointer uppercase tracking-wider"
+                        className="text-xs font-bold text-[#EEB540] hover:text-[#EEB540]/80 underline cursor-pointer uppercase tracking-wider"
                       >
                         Change
                       </button>
@@ -219,7 +219,7 @@ export default function BallotFlowClient({
             <button
               onClick={handleSubmitBallot}
               disabled={submitting || initialPositions.some((p) => !selections[p.id])}
-              className="w-full py-4 rounded-xl font-extrabold text-white text-lg tracking-wide bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 transition-all flex justify-center items-center gap-2 disabled:opacity-40 disabled:pointer-events-none shadow-lg shadow-emerald-950/30"
+              className="w-full py-4 rounded-xl font-extrabold text-white text-lg tracking-wide bg-[#A22538] hover:bg-[#8A1B2C] transition-all flex justify-center items-center gap-2 disabled:opacity-40 disabled:pointer-events-none shadow-lg shadow-[#A22538]/15 border border-[#A22538]/10 cursor-pointer"
             >
               {submitting ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -237,20 +237,17 @@ export default function BallotFlowClient({
   return (
     <div className="min-h-screen flex flex-col bg-slate-950">
       {/* Header */}
-      <header className="border-b border-slate-900 bg-slate-950/60 backdrop-blur-md sticky top-0 z-10">
+      <header className="border-b border-slate-900/60 bg-slate-950/60 backdrop-blur-md sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <KinfordLogo size={36} showText={true} />
           <div className="flex items-center gap-4">
-            <KinfordLogo size={36} />
-            <div>
-              <h1 className="font-semibold text-slate-200 text-base tracking-wide uppercase">Kinford Ballot</h1>
-              <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider">
-                Position {currentStep + 1} of {initialPositions.length}
-              </p>
+            <span className="text-[10px] font-bold text-[#EEB540] tracking-widest uppercase bg-[#EEB540]/5 px-3 py-1 rounded-full border border-[#EEB540]/10 hidden sm:inline-block">
+              Position {currentStep + 1} of {initialPositions.length}
+            </span>
+            <div className="text-right">
+              <p className="text-xs text-slate-400">Voter: <span className="text-slate-200 font-medium">{voterName}</span></p>
+              <p className="text-[10px] text-slate-500">Class: {voterClass}</p>
             </div>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-slate-400">Voter: <span className="text-slate-200 font-medium">{voterName}</span></p>
-            <p className="text-[10px] text-slate-500">Class: {voterClass}</p>
           </div>
         </div>
       </header>
@@ -260,13 +257,13 @@ export default function BallotFlowClient({
         {/* Progress indicator */}
         <div className="w-full bg-slate-900 h-1.5 rounded-full mb-10 overflow-hidden border border-slate-950">
           <div
-            className="bg-indigo-500 h-full rounded-full transition-all duration-300"
+            className="bg-[#EEB540] h-full rounded-full transition-all duration-300"
             style={{ width: `${((currentStep) / initialPositions.length) * 100}%` }}
           />
         </div>
 
         <div className="mb-8">
-          <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest block mb-1">
+          <span className="text-xs font-bold text-[#EEB540] uppercase tracking-widest block mb-1">
             Now Voting For
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-100 tracking-tight">
@@ -285,7 +282,7 @@ export default function BallotFlowClient({
                   setIsReview(true);
                 }
               }}
-              className="px-6 py-2.5 rounded-lg bg-slate-800 text-white font-medium hover:bg-slate-700 transition"
+              className="px-6 py-2.5 rounded-lg bg-slate-800 text-white font-medium hover:bg-slate-700 transition cursor-pointer"
             >
               Skip Position
             </button>
@@ -300,8 +297,8 @@ export default function BallotFlowClient({
                   onClick={() => handleSelectCandidate(candidate)}
                   className={`glass-panel rounded-3xl overflow-hidden cursor-pointer flex flex-col justify-between border-2 transition-all ${
                     isSelected
-                      ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-2xl scale-[1.01]'
-                      : 'border-slate-800/80 hover:border-slate-700/80 hover:bg-slate-900/50'
+                      ? 'border-[#EEB540] ring-2 ring-[#EEB540]/20 shadow-2xl scale-[1.01]'
+                      : 'border-slate-800/80 hover:border-slate-700/80 hover:bg-slate-900/10'
                   }`}
                 >
                   <div>
@@ -322,11 +319,11 @@ export default function BallotFlowClient({
                     {/* Candidate Details */}
                     <div className="p-6">
                       <h3 className="text-xl font-bold text-slate-100 mb-1 leading-tight">{candidate.name}</h3>
-                      <p className="text-xs text-indigo-400 font-semibold tracking-wider uppercase mb-4">Candidate</p>
+                      <p className="text-xs text-[#EEB540] font-semibold tracking-wider uppercase mb-4">Candidate</p>
                       
                       <div className="border-t border-slate-900 pt-4">
                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Manifesto</span>
-                        <p className="text-sm text-slate-400 leading-relaxed line-clamp-6 whitespace-pre-line font-light">
+                        <p className="text-sm text-slate-400 leading-relaxed line-clamp-6 whitespace-pre-line font-light font-sans">
                           {candidate.manifesto}
                         </p>
                       </div>
@@ -335,9 +332,9 @@ export default function BallotFlowClient({
 
                   <div className="px-6 pb-6 pt-2">
                     <button
-                      className={`w-full py-3 rounded-xl font-bold text-sm tracking-wide transition-all border ${
+                      className={`w-full py-3 rounded-xl font-bold text-sm tracking-wide transition-all border cursor-pointer ${
                         isSelected
-                          ? 'bg-indigo-600 border-indigo-600 text-white'
+                          ? 'bg-[#A22538] border-[#A22538] text-white hover:bg-[#8A1B2C]'
                           : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
                       }`}
                     >

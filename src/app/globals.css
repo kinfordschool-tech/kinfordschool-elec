@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617; /* Slate 950 */
+  --background: #0A0A1A; /* Deep Navy */
   --foreground: #f8fafc; /* Slate 50 */
 }
 
@@ -21,11 +21,11 @@ body {
 
 /* Glassmorphism utility card */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.45); /* Slate 900 with transparency */
+  background: rgba(10, 10, 26, 0.65); /* Deep Navy with transparency */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
 }
 
 .glass-panel-hover {
@@ -33,9 +33,9 @@ body {
 }
 
 .glass-panel-hover:hover {
-  background: rgba(15, 23, 42, 0.65);
-  border-color: rgba(99, 102, 241, 0.25); /* Indigo 500 */
-  box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.12);
+  background: rgba(10, 10, 26, 0.8);
+  border-color: rgba(238, 181, 64, 0.3); /* Gold #EEB540 */
+  box-shadow: 0 12px 40px 0 rgba(238, 181, 64, 0.1);
   transform: translateY(-2px);
 }
 
@@ -76,7 +76,7 @@ body {
 
 @keyframes fill {
   100% {
-    box-shadow: inset 0px 0px 0px 30px #10b981; /* Emerald 500 */
+    box-shadow: inset 0px 0px 0px 30px #A22538; /* Maroon */
   }
 }
 
@@ -85,7 +85,7 @@ body {
   stroke-dashoffset: 166;
   stroke-width: 2;
   stroke-miterlimit: 10;
-  stroke: #10b981;
+  stroke: #EEB540; /* Gold */
   fill: none;
   animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
@@ -98,7 +98,7 @@ body {
   stroke-width: 2;
   stroke: #fff;
   stroke-miterlimit: 10;
-  box-shadow: inset 0px 0px 0px #10b981;
+  box-shadow: inset 0px 0px 0px #A22538; /* Maroon */
   animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
 }
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  {/* Gold Bar */}
+  <rect x="25" y="18" width="50" height="15" fill="#EEB540" />
+  {/* Maroon Arch */}
+  <path d="M25,76 L25,52 Q50,28 75,52 L75,76 Q50,51 25,76 Z" fill="#A22538" />
+</svg>

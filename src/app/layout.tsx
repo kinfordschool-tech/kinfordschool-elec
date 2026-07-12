@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kinford School Council Election 2026",
-  description: "Official digital ballot system for the Kinford School Council Election 2026. Secure, anonymous, and fast in-person voting.",
+  title: "Kinford School of Guidance - Council Election 2026",
+  description: "Official digital ballot system for the Kinford School of Guidance Council Election 2026. Secure, anonymous, and fast in-person voting.",
 };
 
 export default function RootLayout({
