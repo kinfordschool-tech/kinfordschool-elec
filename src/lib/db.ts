@@ -1,20 +1,34 @@
 import { Pool, PoolConfig } from 'pg';
 
-const connectionString = process.env.DATABASE_URL;
+let connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
   throw new Error('DATABASE_URL environment variable is not defined');
 }
 
-// Map the connection string correctly (URL-encode password if needed, but it's already encoded in .env.local)
+// 1. Automatically fix database connection string common pooler format issues
+if (connectionString.includes('pooler.supabase.com')) {
+  // Supabase transaction pooler requires the username in format: postgres.[project-ref]
+  // If the user provided the default "postgres" username, rewrite it programmatically.
+  if (connectionString.startsWith('postgresql://postgres:') || connectionString.startsWith('postgres://postgres:')) {
+    connectionString = connectionString.replace('://postgres:', '://postgres.bvgvyslczhooyvqqztyx:');
+  }
+  
+  // Ensure sslmode=require is appended to the connection string
+  if (!connectionString.includes('sslmode=')) {
+    const separator = connectionString.includes('?') ? '&' : '?';
+    connectionString += `${separator}sslmode=require`;
+  }
+}
+
 const poolConfig: PoolConfig = {
   connectionString,
   ssl: {
-    rejectUnauthorized: false,
+    rejectUnauthorized: false, // Required for secure remote SSL handshake with Supabase
   },
-  max: 10, // Limit pool size for single-laptop scale app
+  max: 10, // Optimize pool size for in-person laptop deployment
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000, // Increase connection timeout to 10s for PgBouncer cold starts
 };
 
 let pool: Pool;
@@ -32,10 +46,19 @@ if (process.env.NODE_ENV === 'production') {
   pool = globalWithPool._postgresPool;
 }
 
+// Listen to pool errors to prevent Node process from crashing on idle connection losses
+pool.on('error', (err) => {
+  console.error('UNEXPECTED DATABASE CLIENT ERROR on idle client:', {
+    message: err.message,
+    code: (err as any).code,
+    stack: err.stack,
+  });
+});
+
 export default pool;
 
 /**
- * Helper to run a database query.
+ * Execute a parameterized database query with rich error reporting.
  */
 export async function query<T = any>(text: string, params?: any[]): Promise<T[]> {
   const start = Date.now();
@@ -46,8 +69,18 @@ export async function query<T = any>(text: string, params?: any[]): Promise<T[]>
       console.log('Executed query', { text, duration, rows: res.rowCount });
     }
     return res.rows;
-  } catch (error) {
-    console.error('Database query error:', error, { text });
+  } catch (error: any) {
+    // Log rich diagnostic details to Render logs
+    console.error('DATABASE QUERY EXECUTION FAILED:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      hint: error.hint,
+      position: error.position,
+      query: text,
+      params: params,
+      durationMs: Date.now() - start,
+    });
     throw error;
   }
 }
