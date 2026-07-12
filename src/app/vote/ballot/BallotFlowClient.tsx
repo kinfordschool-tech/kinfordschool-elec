@@ -50,10 +50,13 @@ export default function BallotFlowClient({
         setCountdown((prev) => prev - 1);
       }, 1000);
     } else if (finished && countdown === 0) {
-      router.push('/vote');
+      // Clear client-side cookie fallback (if not set with HttpOnly)
+      document.cookie = 'voter_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0;';
+      // Force a full page navigation to /vote to destroy all React/Next.js memory states
+      window.location.href = '/vote';
     }
     return () => clearTimeout(timer);
-  }, [finished, countdown, router]);
+  }, [finished, countdown]);
 
   const activePosition = initialPositions[currentStep];
   const activeCandidates = initialCandidates.filter(
