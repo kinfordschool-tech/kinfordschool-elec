@@ -189,6 +189,31 @@ export default function AdminDashboardClient({
     }
   };
 
+  // Clear All Results
+  const handleClearResults = async () => {
+    const message = "This will permanently delete all votes and reset every voter's status. This cannot be undone. Continue?";
+    if (!confirm(message)) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/results/clear', {
+        method: 'POST',
+      });
+      if (res.ok) {
+        alert('All voting data and statuses have been successfully cleared.');
+        await refreshData();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to clear results.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('A network error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ==========================================
   // POSITIONS CRUD OPERATIONS
   // ==========================================
@@ -849,6 +874,26 @@ export default function AdminDashboardClient({
                   ))
                 )}
               </div>
+
+              {/* Danger Zone: Clear Results */}
+              <div className="border-t border-red-950/40 pt-10 mt-12">
+                <div className="bg-red-950/5 border border-red-950/20 rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div>
+                    <h4 className="text-sm font-bold text-red-400 uppercase tracking-widest">Danger Zone</h4>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Reset the election database. This clears all cast ballots, resets candidate vote counters, and allows registered voters to vote again.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleClearResults}
+                    disabled={loading}
+                    className="px-5 py-3 rounded-xl font-bold bg-red-950/30 hover:bg-red-900/50 text-red-400 hover:text-red-300 transition text-xs border border-red-900/20 cursor-pointer shrink-0"
+                  >
+                    Clear All Results
+                  </button>
+                </div>
+              </div>
+
             </div>
           )}
 
