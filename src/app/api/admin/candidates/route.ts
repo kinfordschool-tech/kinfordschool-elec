@@ -1,40 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
-
-// Helper to upload file to Supabase storage via REST API
-async function uploadPhotoToSupabase(file: File): Promise<string> {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_KEY;
-  const bucketName = 'candidate-photos';
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Supabase URL or Key env variable is missing');
-  }
-
-  const ext = file.name.split('.').pop() || 'jpg';
-  const cleanFileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
-  const uploadUrl = `${supabaseUrl}/storage/v1/object/${bucketName}/${cleanFileName}`;
-
-  const arrayBuffer = await file.arrayBuffer();
-
-  const res = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: {
-      'apikey': supabaseKey,
-      'Authorization': `Bearer ${supabaseKey}`,
-      'Content-Type': file.type || 'application/octet-stream',
-    },
-    body: arrayBuffer,
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || `Storage upload failed with status ${res.status}`);
-  }
-
-  // Return the public URL to access the photo
-  return `${supabaseUrl}/storage/v1/object/public/${bucketName}/${cleanFileName}`;
-}
+import { uploadToSupabaseStorage } from '@/lib/supabase';
 
 // 1. GET - Fetch all candidates grouped/joined by position
 export async function GET(request: Request) {
@@ -72,14 +38,23 @@ export async function POST(request: Request) {
     // Upload photo to Supabase storage if provided
     if (photoFile && photoFile.size > 0) {
       try {
-        photoUrl = await uploadPhotoToSupabase(photoFile);
+        const ext = photoFile.name.split('.').pop() || 'jpg';
+        const cleanFileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+        const arrayBuffer = await photoFile.arrayBuffer();
+
+        photoUrl = await uploadToSupabaseStorage(
+          'candidate-photos',
+          cleanFileName,
+          arrayBuffer,
+          photoFile.type || 'application/octet-stream'
+        );
       } catch (uploadErr: any) {
         console.error('Failed to upload photo:', uploadErr);
         return NextResponse.json({ error: `Photo upload failed: ${uploadErr.message}` }, { status: 500 });
       }
     } else {
       // Fallback placeholder image if no photo is provided
-      photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=256&background=5B21B6&color=fff`;
+      photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=256&background=A22538&color=fff`;
     }
 
     const insertRes = await query(
@@ -114,7 +89,16 @@ export async function PUT(request: Request) {
     // If new photo is provided, upload it
     if (photoFile && photoFile.size > 0) {
       try {
-        photoUrl = await uploadPhotoToSupabase(photoFile);
+        const ext = photoFile.name.split('.').pop() || 'jpg';
+        const cleanFileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+        const arrayBuffer = await photoFile.arrayBuffer();
+
+        photoUrl = await uploadToSupabaseStorage(
+          'candidate-photos',
+          cleanFileName,
+          arrayBuffer,
+          photoFile.type || 'application/octet-stream'
+        );
       } catch (uploadErr: any) {
         console.error('Failed to upload new photo:', uploadErr);
         return NextResponse.json({ error: `Photo upload failed: ${uploadErr.message}` }, { status: 500 });
