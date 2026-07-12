@@ -50,9 +50,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const { name, class: className, bulkText } = body;
+    const { name, bulkText } = body;
 
-    // SCENARIO A: Bulk Add via textarea
+    // SCENARIO A: Bulk Add via textarea (One student name per line)
     if (bulkText && typeof bulkText === 'string') {
       const lines = bulkText.split('\n');
       const addedVoters: any[] = [];
@@ -64,23 +64,8 @@ export async function POST(request: Request) {
         await client.query('BEGIN');
 
         for (let i = 0; i < lines.length; i++) {
-          const line = lines[i].trim();
-          if (!line) continue;
-
-          // Parse "Name, Class"
-          const parts = line.split(',');
-          if (parts.length < 2) {
-            errors.push(`Line ${i + 1}: Invalid format. Expected "Name, Class"`);
-            continue;
-          }
-
-          const studentName = parts[0].trim();
-          const studentClass = parts.slice(1).join(',').trim(); // Join remaining in case class name contains commas
-
-          if (!studentName || !studentClass) {
-            errors.push(`Line ${i + 1}: Name or Class cannot be empty`);
-            continue;
-          }
+          const studentName = lines[i].trim();
+          if (!studentName) continue;
 
           // Generate unique access code
           // Note: we query the client inside transaction to ensure concurrency safety
@@ -90,9 +75,10 @@ export async function POST(request: Request) {
           };
           const uniqueCode = await getUniqueAccessCode(checkFunc);
 
+          // We pass an empty string for the class field to keep the schema happy
           const insertRes = await client.query(
-            'INSERT INTO voters (name, class, access_code, has_voted) VALUES ($1, $2, $3, FALSE) RETURNING *',
-            [studentName, studentClass, uniqueCode]
+            "INSERT INTO voters (name, class, access_code, has_voted) VALUES ($1, '', $2, FALSE) RETURNING *",
+            [studentName, uniqueCode]
           );
           
           addedVoters.push(insertRes.rows[0]);
@@ -116,19 +102,20 @@ export async function POST(request: Request) {
     }
 
     // SCENARIO B: Single Add
-    if (name && className) {
+    if (name) {
       // Find a unique access code
       const uniqueCode = await getUniqueAccessCode(query);
 
+      // We pass an empty string for the class field
       const insertRes = await query(
-        'INSERT INTO voters (name, class, access_code, has_voted) VALUES ($1, $2, $3, FALSE) RETURNING *',
-        [name.trim(), className.trim(), uniqueCode]
+        "INSERT INTO voters (name, class, access_code, has_voted) VALUES ($1, '', $2, FALSE) RETURNING *",
+        [name.trim(), uniqueCode]
       );
 
       return NextResponse.json({ success: true, voter: insertRes[0] });
     }
 
-    return NextResponse.json({ error: 'Missing voter details' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing student name' }, { status: 400 });
   } catch (err) {
     console.error('Error adding voter:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

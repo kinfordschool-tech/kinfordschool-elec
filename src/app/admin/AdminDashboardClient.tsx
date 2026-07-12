@@ -353,14 +353,14 @@ export default function AdminDashboardClient({
   // ==========================================
   const handleAddSingleVoter = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!voterForm.name.trim() || !voterForm.class.trim()) return;
+    if (!voterForm.name.trim()) return;
 
     setLoading(true);
     try {
       const res = await fetch('/api/admin/voters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(voterForm),
+        body: JSON.stringify({ name: voterForm.name.trim() }),
       });
 
       if (res.ok) {
@@ -428,7 +428,7 @@ export default function AdminDashboardClient({
     const filtered = voters.filter(
       (v) =>
         v.name.toLowerCase().includes(voterSearch.toLowerCase()) ||
-        v.class.toLowerCase().includes(voterSearch.toLowerCase())
+        v.access_code.toLowerCase().includes(voterSearch.toLowerCase())
     );
 
     const rows = filtered
@@ -436,7 +436,6 @@ export default function AdminDashboardClient({
         (v) => `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: sans-serif;">${v.name}</td>
-        <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: sans-serif;">${v.class}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #a22538; letter-spacing: 2px;">${v.access_code}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: sans-serif;">${v.has_voted ? 'YES' : 'NO'}</td>
       </tr>
@@ -462,7 +461,6 @@ export default function AdminDashboardClient({
             <thead>
               <tr>
                 <th>Student Name</th>
-                <th>Class</th>
                 <th>Access Code</th>
                 <th>Voted?</th>
               </tr>
@@ -477,18 +475,156 @@ export default function AdminDashboardClient({
     printWindow.document.close();
   };
 
+  const handleDownloadPDF = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const filtered = voters.filter(
+      (v) =>
+        v.name.toLowerCase().includes(voterSearch.toLowerCase()) ||
+        v.access_code.toLowerCase().includes(voterSearch.toLowerCase())
+    );
+
+    const rows = filtered
+      .map(
+        (v) => `
+      <div class="voter-row">
+        <span class="voter-name">${v.name}</span>
+        <span class="voter-dot-leader"></span>
+        <span class="voter-code">${v.access_code}</span>
+      </div>
+    `
+      )
+      .join('');
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Kinford School of Guidance - Access Codes PDF</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+            body {
+              font-family: 'Outfit', sans-serif;
+              color: #1e293b;
+              padding: 40px;
+              background-color: #fff;
+              max-width: 800px;
+              margin: 0 auto;
+            }
+            .header {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              text-align: center;
+              margin-bottom: 40px;
+              border-bottom: 2px solid #a22538;
+              padding-bottom: 24px;
+            }
+            .logo-crest {
+              margin-bottom: 12px;
+            }
+            .brand-title {
+              font-size: 20px;
+              font-weight: 800;
+              color: #a22538;
+              letter-spacing: 1px;
+              margin: 0;
+              text-transform: uppercase;
+            }
+            .brand-subtitle {
+              font-size: 11px;
+              font-weight: 600;
+              color: #eeb540;
+              letter-spacing: 2px;
+              margin: 4px 0 0 0;
+              text-transform: uppercase;
+            }
+            .title {
+              font-size: 24px;
+              font-weight: 600;
+              color: #0f172a;
+              margin: 20px 0 6px 0;
+            }
+            .subtitle {
+              font-size: 13px;
+              color: #64748b;
+              margin: 0 0 10px 0;
+            }
+            .voter-list {
+              margin-top: 20px;
+            }
+            .voter-row {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 14px 0;
+              border-bottom: 1px dashed #e2e8f0;
+              page-break-inside: avoid;
+            }
+            .voter-name {
+              font-size: 15px;
+              font-weight: 600;
+              color: #1e293b;
+            }
+            .voter-dot-leader {
+              flex-grow: 1;
+              border-bottom: 1px dotted #cbd5e1;
+              margin: 0 16px;
+              height: 12px;
+              display: inline-block;
+            }
+            .voter-code {
+              font-family: monospace;
+              font-size: 18px;
+              font-weight: 700;
+              color: #a22538;
+              letter-spacing: 2px;
+              background-color: #f8fafc;
+              padding: 4px 12px;
+              border-radius: 6px;
+              border: 1px solid #e2e8f0;
+            }
+            @media print {
+              body { padding: 20px; }
+              .voter-row { border-bottom: 1px dashed #94a3b8; }
+            }
+          </style>
+        </head>
+        <body onload="window.print();">
+          <div class="header">
+            <div class="logo-crest">
+              <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 20 H90 V30 H10 Z" fill="#EEB540"/>
+                <path d="M20 40 C20 40 50 15 80 40 C80 40 50 25 20 40 Z" fill="#A22538"/>
+                <circle cx="50" cy="65" r="15" fill="#A22538" stroke="#EEB540" stroke-width="4"/>
+              </svg>
+            </div>
+            <h1 class="brand-title">Kinford School of Guidance</h1>
+            <p class="brand-subtitle">Official Voting System 2026</p>
+            
+            <h2 class="title">Student Access Codes Directory</h2>
+            <p class="subtitle">Secure in-person ballot verification credentials. Keep confidential.</p>
+          </div>
+          
+          <div class="voter-list">
+            ${rows}
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   // Filter lists
   const filteredVoters = voters.filter(
     (v) =>
       v.name.toLowerCase().includes(voterSearch.toLowerCase()) ||
-      v.class.toLowerCase().includes(voterSearch.toLowerCase()) ||
       v.access_code.toLowerCase().includes(voterSearch.toLowerCase())
   );
 
   const filteredTurnout = turnout.filter(
     (v) =>
-      v.name.toLowerCase().includes(turnoutSearch.toLowerCase()) ||
-      v.class.toLowerCase().includes(turnoutSearch.toLowerCase())
+      v.name.toLowerCase().includes(turnoutSearch.toLowerCase())
   );
 
   return (
@@ -501,7 +637,7 @@ export default function AdminDashboardClient({
           <div className="flex items-center gap-4">
             <button
               onClick={refreshData}
-              className="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer border border-slate-900"
+              className="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-850 text-slate-400 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer border border-slate-900"
               title="Refresh database records"
             >
               <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
@@ -716,7 +852,7 @@ export default function AdminDashboardClient({
             </div>
           )}
 
-          {/* TAB 2: VOTER TURNOUT LIST (Decoupled layout) */}
+          {/* TAB 2: VOTER TURNOUT LIST */}
           {activeTab === 'turnout' && (
             <div className="space-y-6 animate-fade-in">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/40 border border-slate-900 p-6 rounded-2xl">
@@ -738,7 +874,7 @@ export default function AdminDashboardClient({
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search students or classes..."
+                  placeholder="Search students..."
                   value={turnoutSearch}
                   onChange={(e) => setTurnoutSearch(e.target.value)}
                   className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
@@ -751,14 +887,13 @@ export default function AdminDashboardClient({
                     <thead>
                       <tr className="border-b border-slate-900 bg-slate-900/30 text-left text-xs font-bold text-slate-500 uppercase tracking-widest">
                         <th className="py-4 px-6">Student Name</th>
-                        <th className="py-4 px-6">Class</th>
                         <th className="py-4 px-6 text-center">Voted?</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredTurnout.length === 0 ? (
                         <tr>
-                          <td colSpan={3} className="py-12 px-6 text-center text-slate-500 text-sm">
+                          <td colSpan={2} className="py-12 px-6 text-center text-slate-500 text-sm">
                             No matching students found.
                           </td>
                         </tr>
@@ -766,7 +901,6 @@ export default function AdminDashboardClient({
                         filteredTurnout.map((t, idx) => (
                           <tr key={idx} className="border-b border-slate-900/50 hover:bg-slate-900/10 transition">
                             <td className="py-4 px-6 font-bold text-slate-200">{t.name}</td>
-                            <td className="py-4 px-6 text-slate-400">{t.class}</td>
                             <td className="py-4 px-6 text-center">
                               {t.has_voted ? (
                                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-[#EEB540]/10 text-[#EEB540] border border-[#EEB540]/20">
@@ -884,7 +1018,7 @@ export default function AdminDashboardClient({
                               <div className="flex justify-end gap-2">
                                 <button
                                   onClick={() => handleEditPos(pos)}
-                                  className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition cursor-pointer"
+                                  className="p-2 rounded-lg bg-slate-900 hover:bg-slate-850 text-slate-400 hover:text-slate-200 transition cursor-pointer"
                                 >
                                   <Edit2 size={14} />
                                 </button>
@@ -977,7 +1111,7 @@ export default function AdminDashboardClient({
                               <div className="p-5 pt-0 flex gap-2">
                                 <button
                                   onClick={() => handleEditCand(cand)}
-                                  className="flex-1 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer text-xs font-bold flex justify-center items-center gap-1 border border-slate-800"
+                                  className="flex-1 py-2 rounded-lg bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white transition cursor-pointer text-xs font-bold flex justify-center items-center gap-1 border border-slate-800"
                                 >
                                   <Edit2 size={12} /> Edit
                                 </button>
@@ -1103,7 +1237,7 @@ export default function AdminDashboardClient({
                         <button
                           type="button"
                           onClick={() => setShowCandModal(false)}
-                          className="px-6 py-3.5 rounded-xl font-bold bg-slate-900 hover:bg-slate-800 text-slate-400 transition cursor-pointer border border-slate-850"
+                          className="px-6 py-3.5 rounded-xl font-bold bg-slate-900 hover:bg-slate-850 text-slate-400 transition cursor-pointer border border-slate-850"
                         >
                           Cancel
                         </button>
@@ -1147,24 +1281,11 @@ export default function AdminDashboardClient({
                           className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                         />
                       </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">
-                          Class
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={voterForm.class}
-                          onChange={(e) => setVoterForm({ ...voterForm, class: e.target.value })}
-                          placeholder="e.g. 11-B"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
-                        />
-                      </div>
                     </div>
                   </div>
                   <button
                     type="submit"
-                    disabled={loading || !voterForm.name.trim() || !voterForm.class.trim()}
+                    disabled={loading || !voterForm.name.trim()}
                     className="w-full mt-6 py-3 rounded-xl font-bold bg-[#A22538] hover:bg-[#8A1B2C] text-white transition flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none border border-[#A22538]/10"
                   >
                     Add Voter
@@ -1177,13 +1298,13 @@ export default function AdminDashboardClient({
                     <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-2">
                       <FileText size={16} /> Bulk Upload Voters
                     </h3>
-                    <p className="text-[10px] text-slate-500 mb-4">Input format: one student per line as <span className="font-mono text-slate-400">Name, Class</span></p>
+                    <p className="text-[10px] text-slate-500 mb-4">Input format: one student name per line (just name, no class)</p>
                     
                     <textarea
                       rows={4}
                       value={bulkText}
                       onChange={(e) => setBulkText(e.target.value)}
-                      placeholder="James Miller, 11-B&#10;Sarah Jenkins, 12-A&#10;David Croft, 10-C"
+                      placeholder="James Miller&#10;Sarah Jenkins&#10;David Croft"
                       className="w-full px-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all font-mono text-xs"
                     />
                   </div>
@@ -1217,18 +1338,26 @@ export default function AdminDashboardClient({
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 w-5 h-5" />
                     <input
                       type="text"
-                      placeholder="Search voters by name, class, or code..."
+                      placeholder="Search voters by name or code..."
                       value={voterSearch}
                       onChange={(e) => setVoterSearch(e.target.value)}
                       className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-900 bg-slate-900/30 text-white placeholder-slate-700 focus:outline-none focus:ring-1 focus:ring-[#EEB540] focus:border-transparent transition-all"
                     />
                   </div>
-                  <button
-                    onClick={handlePrintVoters}
-                    className="px-5 py-3 rounded-xl font-bold bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white transition flex items-center gap-2 cursor-pointer border border-slate-850 shrink-0 w-full sm:w-auto justify-center"
-                  >
-                    <Printer size={16} /> Print Access Codes
-                  </button>
+                  <div className="flex gap-2 shrink-0 w-full sm:w-auto justify-center">
+                    <button
+                      onClick={handlePrintVoters}
+                      className="px-5 py-3 rounded-xl font-bold bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white transition flex items-center gap-2 cursor-pointer border border-slate-850 justify-center w-full sm:w-auto"
+                    >
+                      <Printer size={16} /> Print Access Codes
+                    </button>
+                    <button
+                      onClick={handleDownloadPDF}
+                      className="px-5 py-3 rounded-xl font-bold bg-[#A22538] hover:bg-[#8A1B2C] text-white transition flex items-center gap-2 cursor-pointer border border-[#A22538]/10 justify-center w-full sm:w-auto"
+                    >
+                      <FileText size={16} /> Download PDF
+                    </button>
+                  </div>
                 </div>
 
                 <div className="glass-panel rounded-3xl overflow-hidden border-slate-800 shadow-xl">
@@ -1237,7 +1366,6 @@ export default function AdminDashboardClient({
                       <thead>
                         <tr className="border-b border-slate-900 bg-slate-900/30 text-left text-xs font-bold text-slate-500 uppercase tracking-widest">
                           <th className="py-4 px-6">Name</th>
-                          <th className="py-4 px-6">Class</th>
                           <th className="py-4 px-6">Access Code</th>
                           <th className="py-4 px-6 text-center">Voted?</th>
                           <th className="py-4 px-6 w-20 text-right">Delete</th>
@@ -1246,7 +1374,7 @@ export default function AdminDashboardClient({
                       <tbody>
                         {filteredVoters.length === 0 ? (
                           <tr>
-                            <td colSpan={5} className="py-12 px-6 text-center text-slate-500 text-sm">
+                            <td colSpan={4} className="py-12 px-6 text-center text-slate-500 text-sm">
                               No voters found. Add students above.
                             </td>
                           </tr>
@@ -1254,7 +1382,6 @@ export default function AdminDashboardClient({
                           filteredVoters.map((v) => (
                             <tr key={v.id} className="border-b border-slate-900/50 hover:bg-slate-900/10 transition">
                               <td className="py-4 px-6 font-bold text-slate-200">{v.name}</td>
-                              <td className="py-4 px-6 text-slate-400">{v.class}</td>
                               <td className="py-4 px-6 font-mono text-sm tracking-wider font-bold text-[#EEB540]">{v.access_code}</td>
                               <td className="py-4 px-6 text-center">
                                 {v.has_voted ? (
