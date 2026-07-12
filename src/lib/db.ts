@@ -1,25 +1,29 @@
 import { Pool, PoolConfig } from 'pg';
+import { parse } from 'pg-connection-string';
 
-let connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
   throw new Error('DATABASE_URL environment variable is not defined');
 }
 
-// 1. Automatically fix database connection string common pooler format issues
-if (connectionString.includes('pooler.supabase.com')) {
-  // Supabase transaction pooler requires the username in format: postgres.[project-ref]
-  // If the user provided the default "postgres" username, rewrite it programmatically.
-  if (connectionString.startsWith('postgresql://postgres:') || connectionString.startsWith('postgres://postgres:')) {
-    connectionString = connectionString.replace('://postgres:', '://postgres.bvgvyslczhooyvqqztyx:');
-  }
-  
-  // Ensure sslmode=require is appended to the connection string
-  if (!connectionString.includes('sslmode=')) {
-    const separator = connectionString.includes('?') ? '&' : '?';
-    connectionString += `${separator}sslmode=require`;
-  }
+// 1. Detect if the user's password contains an unencoded '?' character
+// An unencoded '?' before the '@' sign will break standard PostgreSQL connection string parsing,
+// causing the parser to treat the username prefix (e.g. postgres.bvgvyslczhooyvqqztyx) as the hostname.
+const atIndex = connectionString.indexOf('@');
+const questionIndex = connectionString.indexOf('?');
+if (questionIndex !== -1 && (atIndex === -1 || questionIndex < atIndex)) {
+  console.error(
+    `\n⚠️ [CRITICAL DATABASE CONFIG ERROR]` +
+    `\nYour DATABASE_URL password contains an unencoded '?' character.` +
+    `\nThis breaks connection URL parsing, causing the driver to treat your database username as the hostname (resulting in getaddrinfo ENOTFOUND).` +
+    `\nFIX REQUIRED: In Render, please change the '?' in your database password string to '%3F' (the URL-encoded equivalent).\n`
+  );
 }
+
+// 2. Parse connection parameters for verification logs (hiding sensitive password details)
+const parsedConfig = parse(connectionString);
+console.log(`[DB INIT] Connecting to Database - Host: ${parsedConfig.host || 'unknown'}, Port: ${parsedConfig.port || '5432'}`);
 
 const poolConfig: PoolConfig = {
   connectionString,
@@ -28,7 +32,7 @@ const poolConfig: PoolConfig = {
   },
   max: 10, // Optimize pool size for in-person laptop deployment
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000, // Increase connection timeout to 10s for PgBouncer cold starts
+  connectionTimeoutMillis: 10000, // 10s timeout for cold poolers
 };
 
 let pool: Pool;
