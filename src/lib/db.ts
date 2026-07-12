@@ -8,27 +8,31 @@ if (!connectionString) {
 }
 
 // 1. Detect if the user's password contains an unencoded '?' character
-// An unencoded '?' before the '@' sign will break standard PostgreSQL connection string parsing,
-// causing the parser to treat the username prefix (e.g. postgres.bvgvyslczhooyvqqztyx) as the hostname.
 const atIndex = connectionString.indexOf('@');
 const questionIndex = connectionString.indexOf('?');
 if (questionIndex !== -1 && (atIndex === -1 || questionIndex < atIndex)) {
   console.error(
     `\n⚠️ [CRITICAL DATABASE CONFIG ERROR]` +
     `\nYour DATABASE_URL password contains an unencoded '?' character.` +
-    `\nThis breaks connection URL parsing, causing the driver to treat your database username as the hostname (resulting in getaddrinfo ENOTFOUND).` +
+    `\nThis breaks connection URL parsing, causing the driver to treat your database username as the hostname.` +
     `\nFIX REQUIRED: In Render, please change the '?' in your database password string to '%3F' (the URL-encoded equivalent).\n`
   );
 }
 
-// 2. Parse connection parameters for verification logs (hiding sensitive password details)
+// 2. Parse connection parameters using pg-connection-string
 const parsedConfig = parse(connectionString);
 console.log(`[DB INIT] Connecting to Database - Host: ${parsedConfig.host || 'unknown'}, Port: ${parsedConfig.port || '5432'}`);
 
+// 3. Construct PoolConfig explicitly by passing individual parameters instead of connectionString.
+// If connectionString is passed, pg will re-parse it internally and overwrite the ssl setting.
 const poolConfig: PoolConfig = {
-  connectionString,
+  host: parsedConfig.host || undefined,
+  port: parsedConfig.port ? parseInt(parsedConfig.port as string, 10) : undefined,
+  user: parsedConfig.user || undefined,
+  password: parsedConfig.password || undefined,
+  database: parsedConfig.database || undefined,
   ssl: {
-    rejectUnauthorized: false, // Required for secure remote SSL handshake with Supabase
+    rejectUnauthorized: false, // Force pg to accept Supabase's self-signed certificate chain
   },
   max: 10, // Optimize pool size for in-person laptop deployment
   idleTimeoutMillis: 30000,
